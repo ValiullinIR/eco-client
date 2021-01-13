@@ -1,0 +1,22 @@
+.image-edit{
+    width: 70%;
+    height: 400px;
+}
+
+.image-preview{
+    width: 300px;
+    height: 300px;
+    margin-left: 1rem;
+}
+.raw-img{
+    width: 100%
+}
+.image-cropper{
+    display: flex;
+    /* flex-shrink: 0; */
+}
+
+.image-preview-self{
+    border: 1px solid;
+    width: 100%;
+}

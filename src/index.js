@@ -1,13 +1,22 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
+import { App } from './app/index';
 import reportWebVitals from './reportWebVitals';
+import { BrowserRouter as Router } from "react-router-dom"
+import { store, saga } from './store';
+import { Provider } from 'react-redux';
+import { SagaWatcher } from './store/sagas/index';
+
+import "./index.css"
+
+saga.run(SagaWatcher)
 
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+  <Provider store={store}>
+    <Router>
+      <App />
+    </Router>
+  </Provider>,
   document.getElementById('root')
 );
 

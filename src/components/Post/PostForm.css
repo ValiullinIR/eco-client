@@ -1,0 +1,21 @@
+.post_form{
+    position: relative;
+    max-width: 500px;
+}
+.post_form__image_label{
+    margin-bottom: 8px;
+}
+.post_form__image_img{
+    border: 1px solid #cfcfcf;
+    width: 400px;
+    height: 225px;
+    object-fit: cover;
+}
+.post_likes-views{
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+.post_form__header{
+    margin-bottom: 16px;
+}

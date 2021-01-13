@@ -1,0 +1,12 @@
+.activities_form{
+    max-width: 500px;
+}
+.activity_form__image_label{
+    margin-bottom: 8px;
+}
+.activity_form__image_img{
+    border: 1px solid #cfcfcf;
+    width: 400px;
+    height: 225px;
+    object-fit: cover;
+}

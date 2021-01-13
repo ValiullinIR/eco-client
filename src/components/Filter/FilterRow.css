@@ -1,0 +1,10 @@
+.CustomTableRow{
+    transition: all .3s ease;
+}
+.CustomTableRow:hover{
+    cursor: pointer;
+    background-color: #efefef;
+}
+.CustomTableCell{
+    background-color: transparent;
+}
