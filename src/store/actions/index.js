@@ -21,3 +21,7 @@ export const postRecPoint = (rp) => ({
     type: RECPOINTS.POST,
     payload: rp
 })
+export const postFilter = (fl) => ({
+    type: POST_FILTER,
+    payload: fl
+})

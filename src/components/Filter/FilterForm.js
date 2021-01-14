@@ -6,6 +6,7 @@ import { useInput } from '../../hooks/useInput'
 import slug from "slugify"
 
 import "./ActivityForm.css"
+import { postFilter } from '../../store/actions'
 
 
 
@@ -26,11 +27,11 @@ export const FilterForm = () => {
         if (editable) {
             // dispatch(updateActivity(_activity._id, new_activity))
         } else {
-            // var fd = new FormData()
-            // fd.append("activity", JSON.stringify(new_activity))
-            // if (!!image.value)
-            //     fd.append("image", DataUriToBlob(image.value), filename)
-            // dispatch(createActivity(fd))
+            var fd = new FormData()
+            fd.append("name", name.value)
+            fd.append("var_name", var_name.value)
+            fd.append("key_words", JSON.stringify(key_words.value))
+            dispatch(postFilter(fd))
         }
     }
 
@@ -131,6 +132,7 @@ export const FilterForm = () => {
                         color="primary"
                         type="submit"
                         startIcon={editable ? <Edit /> : <Add />}
+                        onClick={handleSubmit}
                     >{editable ? "Изменить" : "Создать"}</Button>
                 </div>
             </div>

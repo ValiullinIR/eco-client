@@ -10,6 +10,7 @@ import "./RecPointForm.css"
 import DataUriToBlob from "../../services/DataUriToBlob"
 import { requestFilters, postRecPoint } from '../../store/actions'
 import { TextFieldPhone } from '../TextFieldPhone'
+import TextFieldPlace from '../TextFieldPlace'
 
 
 const WEEK_DAYS = ["ПН", "ВТ", "СР", "ЧТ", "ПТ", "СБ", "ВС"]
@@ -23,6 +24,7 @@ export const RecPointForm = () => {
     const name = useInput("")
     const description = useInput("")
     const address = useInput("")
+    const coords = useInput()
     const contacts = useInput("(9  )    -    ")
     const work_time = useInput({
         "ПН": ["", "", "", ""],
@@ -34,7 +36,7 @@ export const RecPointForm = () => {
         "ВС": ["", "", "", ""],
     })
     const filters = useInput([])
-    
+
     const image = useInput()
     const filename = useInput("")
 
@@ -42,7 +44,7 @@ export const RecPointForm = () => {
 
     const set_work_time = (day, index, value) => {
         work_time.setValue(p => {
-            let h = {...p}
+            let h = { ...p }
             h[day][index] = value
             return h
         })
@@ -58,9 +60,10 @@ export const RecPointForm = () => {
             fd.append("name", name.value)
             fd.append("description", description.value)
             fd.append("address", address.value)
-            fd.append("contacts", '+7'+contacts.value)
+            fd.append("coords", JSON.stringify(coords.value))
+            fd.append("contacts", '+7' + contacts.value)
             fd.append("work_time", JSON.stringify(work_time.value))
-            fd.append("accept_types", JSON.stringify(filters.value.map((e)=> e._id['$oid'])))
+            fd.append("accept_types", JSON.stringify(filters.value.map((e) => e._id['$oid'])))
             if (!!image.value)
                 fd.append("image", DataUriToBlob(image.value), filename.value)
             dispatch(postRecPoint(fd))
@@ -77,8 +80,9 @@ export const RecPointForm = () => {
     }
 
     useEffect(() => {
-        dispatch(requestFilters())
-    }, [])
+        if (__filters.length === 0)
+            dispatch(requestFilters())
+    }, [__filters.length])
 
     return (
         <>
@@ -102,10 +106,10 @@ export const RecPointForm = () => {
                     />
                 </div>
                 <div className="input_container">
-                    <TextField
+                    <TextFieldPlace
                         fullWidth
-                        label="Адрес"
-                        {...address.bind}
+                        setAddr={address.setValue}
+                        setCoords={coords.setValue}
                     />
                 </div>
                 <div className="input_container">
@@ -131,15 +135,15 @@ export const RecPointForm = () => {
                         </TableHead>
                         <TableBody>
                             <TableRow>
-                                {WEEK_DAYS.map((day, i) =><TableCell key={i} align="center">
-                                    <TextField onChange={(e) => set_work_time(day, 0, e.target.value)} type="time"/>
-                                    <TextField onChange={(e) => set_work_time(day, 1, e.target.value)} type="time"/>
+                                {WEEK_DAYS.map((day, i) => <TableCell key={i} align="center">
+                                    <TextField onChange={(e) => set_work_time(day, 0, e.target.value)} type="time" />
+                                    <TextField onChange={(e) => set_work_time(day, 1, e.target.value)} type="time" />
                                 </TableCell>)}
                             </TableRow>
                             <TableRow>
-                                {WEEK_DAYS.map((day, i) =><TableCell key={i} align="center">
-                                    <TextField onChange={(e) => set_work_time(day, 2, e.target.value)} type="time"/>
-                                    <TextField onChange={(e) => set_work_time(day, 3, e.target.value)} type="time"/>
+                                {WEEK_DAYS.map((day, i) => <TableCell key={i} align="center">
+                                    <TextField onChange={(e) => set_work_time(day, 2, e.target.value)} type="time" />
+                                    <TextField onChange={(e) => set_work_time(day, 3, e.target.value)} type="time" />
                                 </TableCell>)}
                             </TableRow>
                         </TableBody>
@@ -157,12 +161,13 @@ export const RecPointForm = () => {
                             filters.setValue(value)
                         }}
                         renderInput={(params) => {
-                            return(
-                            <TextField
-                                {...params}
-                                label="Принимаемые типы"
-                            />
-                        )}}
+                            return (
+                                <TextField
+                                    {...params}
+                                    label="Принимаемые типы"
+                                />
+                            )
+                        }}
                     />
                 </div>
                 <div className="form_action__group">

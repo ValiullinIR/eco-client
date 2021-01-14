@@ -25,8 +25,10 @@ export const RecPoints = ({ view = "grid" }) => {
     return <Table>
         <TableHead>
             <TableRow>
-                <StyledTableCell align="center" >Название</StyledTableCell>
-                <StyledTableCell align="center" >Фильтры</StyledTableCell>
+                <StyledTableCell align="center">Название</StyledTableCell>
+                <StyledTableCell align="center">Адрес</StyledTableCell>
+                <StyledTableCell align="center">Описание</StyledTableCell>
+                <StyledTableCell align="center">Фильтры</StyledTableCell>
             </TableRow>
         </TableHead>
         <TableBody>
