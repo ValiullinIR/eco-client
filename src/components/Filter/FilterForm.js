@@ -17,7 +17,9 @@ export const FilterForm = () => {
     const name = useInput("")
     const var_name = useInput("")
     const key_word = useInput("")
+    const bad_word = useInput("")
     const key_words = useInput([])
+    const bad_words = useInput([])
 
     const editable = false
 
@@ -31,6 +33,7 @@ export const FilterForm = () => {
             fd.append("name", name.value)
             fd.append("var_name", var_name.value)
             fd.append("key_words", JSON.stringify(key_words.value))
+            fd.append("bad_words", JSON.stringify(bad_words.value))
             dispatch(postFilter(fd))
         }
     }
@@ -44,6 +47,16 @@ export const FilterForm = () => {
     }
     const appendToKeyWords = () => {
         key_words.setValue(p => p.concat(key_word.value))
+        key_word.cleanup()
+    }
+    const removeFromBadWords = (index) => () => {
+        let h = [...bad_words.value]
+        h.splice(index, 1)
+        bad_words.setValue(h)
+    }
+    const appendToBadWords = () => {
+        bad_words.setValue(p => p.concat(bad_word.value))
+        bad_word.cleanup()
     }
     const handleClear = () => {
         // dispatch(clearCurrentActivity())
@@ -106,6 +119,36 @@ export const FilterForm = () => {
                         label="Ключевое слово"
                         {...key_word.bind}
                         onKeyDown={e => e.key === "Enter" && appendToKeyWords()}
+                    />
+                </div>
+                <div className="input_container">
+                    {bad_words.value.length > 0 && <Table>
+                        <TableHead>
+                            <TableCell>Исключенное слово</TableCell>
+                            <TableCell>Удалить</TableCell>
+                        </TableHead>
+                        <TableBody>
+                            {bad_words.value.map((word, i) => {
+                                return <TableRow key={i}>
+                                    <TableCell>{word}</TableCell>
+                                    <TableCell>
+                                        <IconButton
+                                            onClick={removeFromBadWords(i)}
+                                        >
+                                            <Clear/>
+                                        </IconButton>
+                                    </TableCell>
+                                </TableRow>
+                            })}        
+                        </TableBody>
+                    </Table>}
+                </div>
+                <div className="input_container">
+                    <TextField
+                        fullWidth
+                        label="Исключенное слово"
+                        {...bad_word.bind}
+                        onKeyDown={e => e.key === "Enter" && appendToBadWords()}
                     />
                 </div>
                 <div className="form_action__group">
