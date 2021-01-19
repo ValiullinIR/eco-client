@@ -1,9 +1,8 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Switch, Route, Redirect, useHistory } from "react-router"
-// import { Alert } from "@material-ui/lab"
-// import { Snackbar } from '@material-ui/core'
 import { FilterPage } from '../pages/FiltersPage'
+import { IndexPage } from '../pages/IndexPage'
 import { MapPage } from '../pages/MapPage'
 import { RecPointsPage } from '../pages/RecPointsPage'
 
@@ -27,7 +26,7 @@ export const App = () => {
     return (
         <Switch>
 
-            <Route exact path="/" component={() => <Redirect to="/filters" />} />
+            <Route exact path="/" component={() => <IndexPage />} />
             <Route path="/test_map" component={() => <MapPage />} />
             <Route path="/filters" component={() => <FilterPage />} />
             <Route path="/rec_points" component={() => <RecPointsPage />} />
