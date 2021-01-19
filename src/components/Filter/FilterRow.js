@@ -8,6 +8,7 @@ export const FilterRow = ({
     name,
     var_name,
     key_words,
+    bad_words,
     ...rest
 }) => {
     return (
@@ -15,6 +16,7 @@ export const FilterRow = ({
             <TableCell className="CustomTableCell" align="center">{name}</TableCell>
             <TableCell className="CustomTableCell" align="center">{var_name}</TableCell>
             <TableCell className="CustomTableCell" align="center">{key_words?.join(" ")}</TableCell>
+            <TableCell className="CustomTableCell" align="center">{bad_words?.join(" ")}</TableCell>
         </TableRow>
     )
 }
