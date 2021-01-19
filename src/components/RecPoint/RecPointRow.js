@@ -8,7 +8,7 @@ export const RecPointRow = ({
     name,
     address,
     description,
-    filters,
+    accept_types,
     ...rest
 }) => {
     return (
@@ -16,7 +16,7 @@ export const RecPointRow = ({
             <TableCell className="CustomTableCell" align="center">{name}</TableCell>
             <TableCell className="CustomTableCell" align="center">{address}</TableCell>
             <TableCell className="CustomTableCell" align="center">{description}</TableCell>
-            <TableCell className="CustomTableCell" align="center">{filters?.map(filter => filter.name).join(" ")}</TableCell>
+            <TableCell className="CustomTableCell" align="center">{accept_types?.map(filter => filter.name).join(" ")}</TableCell>
         </TableRow>
     )
 }

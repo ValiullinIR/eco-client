@@ -1,6 +1,6 @@
 
 const config = { 
-    path: "/filters"
+    path: "/api/filters"
 }
 
 export default config

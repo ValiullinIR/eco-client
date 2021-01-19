@@ -1,6 +1,6 @@
 
 const config = { 
-    path: "/rec_points"
+    path: "/api/rec_points"
 }
 
 export default config

@@ -26,9 +26,10 @@ export const App = () => {
 
     return (
         <>
-            <Route path="/test_map" component={()=><MapPage />} />
-            <Route path="/filters" component={()=><FilterPage />} />
-            <Route path="/rec_points" component={()=><RecPointsPage />} />
+            <Route exact path="/" component={() => <Redirect to="/filters" />} />
+            <Route path="/test_map" component={() => <MapPage />} />
+            <Route path="/filters" component={() => <FilterPage />} />
+            <Route path="/rec_points" component={() => <RecPointsPage />} />
             {/* <Route path="/filters" component={()=><FilterPage />} /> */}
         </>
     )
