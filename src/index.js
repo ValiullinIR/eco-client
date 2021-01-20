@@ -13,7 +13,9 @@ saga.run(SagaWatcher)
 
 ReactDOM.render(
   <Provider store={store}>
-    <Router>
+    <Router
+      basename="/admin"
+    >
       <App />
     </Router>
   </Provider>,

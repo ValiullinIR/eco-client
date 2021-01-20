@@ -27,6 +27,7 @@ export const Filters = () => {
                 <StyledTableCell align="center" >Название</StyledTableCell>
                 <StyledTableCell align="center" >Название переменной</StyledTableCell>
                 <StyledTableCell align="center" >Ключевые слова</StyledTableCell>
+                <StyledTableCell align="center" >Исключенные слова</StyledTableCell>
             </TableRow>
         </TableHead>
         <TableBody>
