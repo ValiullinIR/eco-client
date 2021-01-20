@@ -101,6 +101,12 @@ export const RecPointForm = () => {
                 <div className="input_container">
                     <TextField
                         fullWidth
+                        label="Партнер"
+                    />
+                </div>
+                <div className="input_container">
+                    <TextField
+                        fullWidth
                         label="Описание"
                         {...description.bind}
                     />
