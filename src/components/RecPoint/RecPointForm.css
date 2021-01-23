@@ -10,3 +10,12 @@
     height: 225px;
     object-fit: cover;
 }
+.confirm_company_filenames{
+    display: flex;
+}
+
+#confirm_company_filename{
+    padding: 0.5rem;
+    justify-content: center;
+    display: flex;
+}

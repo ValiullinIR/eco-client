@@ -1,6 +1,6 @@
-import { Button, TableHead, TableRow, TextField, Table, TableBody, TableCell, InputAdornment } from '@material-ui/core'
+import { Button, TableHead, TableRow, TextField, Table, TableBody, TableCell, InputAdornment, Icon } from '@material-ui/core'
 import { Autocomplete } from '@material-ui/lab'
-import { Delete, Clear, Edit, Add } from '@material-ui/icons'
+import { Delete, Clear, Edit, Add, Close } from '@material-ui/icons'
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useInput } from '../../hooks/useInput'
@@ -37,7 +37,8 @@ export const RecPointForm = () => {
     })
     const filters = useInput([])
 
-    const image = useInput()
+    const images = useInput([])
+    const image_paths = useInput([])
     const filename = useInput("")
 
     const editable = false
@@ -64,13 +65,49 @@ export const RecPointForm = () => {
             fd.append("contacts", '+7' + contacts.value)
             fd.append("work_time", JSON.stringify(work_time.value))
             fd.append("accept_types", JSON.stringify(filters.value.map((e) => e._id['$oid'])))
-            if (!!image.value)
-                fd.append("image", DataUriToBlob(image.value), filename.value)
+            // if (!!images.length > 0)
+            //     fd.append("image", DataUriToBlob(images.value), filename.value)
+            for(let file of images.value){
+                fd.append("images", file)
+            }
             dispatch(postRecPoint(fd))
         }
     }
 
+    const appendToImages = (image) => {
+        images.setValue(p => p.concat(image))
+    }
+    const appendToImagePaths = (image) => {
+        images.setValue(p => p.concat(image))
+    }
+    const removeFromImages = (index) => {
+        images.setValue(p => {
+            var h = [...p]
+            h.splice(index, 1)
+            return (h);
+        })
+    }
+    const removeFromImagePaths = (index) => {
+        images.setValue(p => {
+            var h = [...p]
+            h.splice(index, 1)
+            return (h);
+        })
+    }
 
+
+    const readfile = (file) => {
+        if (file.type === "application/pdf" || file.type === "image/jpeg" || file.type === "image/png") {
+            var fr = new FileReader();
+
+            fr.onload = () => {
+                appendToImagePaths(file);
+            }
+            fr.onabort = () => console.log('aborted')
+            fr.onerror = () => console.log("error")
+            fr.readAsDataURL(file)
+        }
+    }
 
     const handleClear = () => {
         // dispatch(clearCurrentActivity())
@@ -110,6 +147,30 @@ export const RecPointForm = () => {
                         label="Описание"
                         {...description.bind}
                     />
+                </div>
+                <div className="input_container">
+                    <input
+                        type="file"
+                        multiple={true}
+                        onChange={e => {
+                            let files = e.target.files
+                            console.log(files)
+                            for (let file of files) {
+                                console.log(file)
+                                appendToImages(file);
+                            }
+                        }}
+                    />
+                    {images.value.length}
+                    <div className="confirm_company_filenames">
+                        {images.value.map((f, index) => {   
+                            return <span
+                                key={index}
+                                id="confirm_company_filename"
+                                onClick={() => removeFromImages(index)}
+                            >{f.name}<Icon><Close /></Icon></span>
+                        })}
+                    </div>
                 </div>
                 <div className="input_container">
                     <TextFieldPlace
