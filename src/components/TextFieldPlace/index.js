@@ -32,24 +32,25 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default ({setCoords, setAddr, ...rest}) => {
+export default ({setCoords, setAddr, coords, ...rest}) => {
     const classes = useStyles();
     const [value, setValue] = React.useState(null);
     const [inputValue, setInputValue] = React.useState('');
     const [options, setOptions] = React.useState([]);
     const loaded = React.useRef(false);
 
-    if (typeof window !== 'undefined' && !loaded.current) {
-        if (!document.querySelector('#google-maps')) {
-            loadScript(
-                'https://maps.googleapis.com/maps/api/js?key=AIzaSyDvMJHc6z8X0finyFVX1gMHfzG8hxKeOAY&libraries=places',
-                document.querySelector('head'),
-                'google-maps',
-            );
-        }
+    
+    // if (typeof window !== 'undefined' && !loaded.current) {
+    //     if (!document.querySelector('#google-maps')) {
+    //         loadScript(
+    //             'https://maps.googleapis.com/maps/api/js?key=AIzaSyDvMJHc6z8X0finyFVX1gMHfzG8hxKeOAY&libraries=places',
+    //             document.querySelector('head'),
+    //             'google-maps',
+    //         );
+    //     }
 
-        loaded.current = true;
-    }
+    //     loaded.current = true;
+    // }
 
     const fetch = React.useMemo(
         () =>
@@ -96,11 +97,23 @@ export default ({setCoords, setAddr, ...rest}) => {
     }, [value, inputValue, fetch]);
     useEffect(async () => {
         if (value) {
+            console.log("value", value)
             const res = await Geocode.fromAddress(value.description)
+            console.log("res", res)
             setCoords(res.results[0].geometry.location)
             setAddr(value.description)
         }
     }, [value])
+
+    useEffect(async ()=>{
+        if(coords?.lat && coords?.lng){
+            const res = await Geocode.fromLatLng(coords.lat, coords.lng, null, "ru")
+            console.log(res)
+            setAddr(res.results[0].formatted_address)
+            setInputValue(res.results[0].formatted_address)
+            setValue({ ... res.results[0], description: res.results[0].formatted_address})
+        }
+    }, [coords.lat, coords.lng])
     return (
         <Autocomplete
             id="google-map-demo"

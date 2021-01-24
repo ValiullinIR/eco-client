@@ -5,8 +5,15 @@ import TextFieldPlace from '../TextFieldPlace';
 import { CSSTransition } from "react-transition-group"
 import "./style.module.css"
 
-const Map = ({ coords }) => {
+const Map = ({ coords, setCoords }) => {
     const center = useInput()
+
+    const handleEndDrag = (coord, _index) => {
+        const { latLng } = coord;
+        const lat = latLng.lat();
+        const lng = latLng.lng();
+        setCoords({lat, lng})
+    }
 
     useEffect(() => {
         if (coords)
@@ -22,6 +29,8 @@ const Map = ({ coords }) => {
                 {coords && (
                     <Marker
                         position={coords}
+                        draggable={true}
+                        onDragEnd={handleEndDrag}
                     />
                 )}
             </GoogleMap>
@@ -31,8 +40,8 @@ const Map = ({ coords }) => {
 
 const WrappedMap = withScriptjs(withGoogleMap(Map))
 
-export default ({ coords, setCoords }) => <div style={{ height: "300px", width: "500px" }}>
-    <TextFieldPlace setCoords={setCoords} fullWidth style={{ marginBottom: "1rem" }} />
+export default ({ coords, setCoords, setAddr }) => <div style={{ height: "300px", width: "500px",paddingBottom: "10%" }}>
+    <TextFieldPlace coords={coords} setAddr={setAddr} setCoords={setCoords} fullWidth style={{ marginBottom: "1rem" }} />
     <CSSTransition
         in={!!coords}
         timeout={500}

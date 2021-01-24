@@ -1,7 +1,7 @@
-import { Button, TextField, Table, TableBody, TableHead, TableRow, TableCell, IconButton } from '@material-ui/core'
+import { Button, TextField, Table, TableBody, TableHead, TableRow, TableCell, IconButton, FormControl, InputLabel, Input } from '@material-ui/core'
 import { Delete, Clear, Edit, Add } from '@material-ui/icons'
-import React, { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import React, { useEffect } from 'react'
+import { useDispatch } from 'react-redux'
 import { useInput } from '../../hooks/useInput'
 import slug from "slugify"
 
@@ -20,6 +20,7 @@ export const FilterForm = () => {
     const bad_word = useInput("")
     const key_words = useInput([])
     const bad_words = useInput([])
+    const image = useInput(null)
 
     const editable = false
 
@@ -90,6 +91,18 @@ export const FilterForm = () => {
                         label="Название переменной"
                         {...var_name.bind}
                     />
+                </div>
+                <div className="input_container">
+                    <FormControl
+                        fullWidth
+                    >
+                        <InputLabel htmlFor="filter-image-input">Картинка</InputLabel>
+                        <Input
+                            id="filter-image-input"
+                            type="file"
+                            {...image.bind}
+                        />
+                    </FormControl>
                 </div>
                 <div className="input_container">
                     {key_words.value.length > 0 && <Table>

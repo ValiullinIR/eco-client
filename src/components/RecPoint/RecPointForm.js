@@ -11,6 +11,7 @@ import DataUriToBlob from "../../services/DataUriToBlob"
 import { requestFilters, postRecPoint } from '../../store/actions'
 import { TextFieldPhone } from '../TextFieldPhone'
 import TextFieldPlace from '../TextFieldPlace'
+import Map from '../Map'
 
 
 const WEEK_DAYS = ["ПН", "ВТ", "СР", "ЧТ", "ПТ", "СБ", "ВС"]
@@ -67,7 +68,7 @@ export const RecPointForm = () => {
             fd.append("accept_types", JSON.stringify(filters.value.map((e) => e._id['$oid'])))
             // if (!!images.length > 0)
             //     fd.append("image", DataUriToBlob(images.value), filename.value)
-            for(let file of images.value){
+            for (let file of images.value) {
                 fd.append("images", file)
             }
             dispatch(postRecPoint(fd))
@@ -163,7 +164,7 @@ export const RecPointForm = () => {
                     />
                     {images.value.length}
                     <div className="confirm_company_filenames">
-                        {images.value.map((f, index) => {   
+                        {images.value.map((f, index) => {
                             return <span
                                 key={index}
                                 id="confirm_company_filename"
@@ -173,11 +174,10 @@ export const RecPointForm = () => {
                     </div>
                 </div>
                 <div className="input_container">
-                    <TextFieldPlace
-                        fullWidth
-                        setAddr={address.setValue}
+                    <Map
+                        coords={coords.value}
                         setCoords={coords.setValue}
-                    />
+                        setAddr={address.setValue} />
                 </div>
                 <div className="input_container">
                     <TextFieldPhone
