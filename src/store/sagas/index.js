@@ -1,14 +1,16 @@
 import { takeEvery, call, put } from "redux-saga/effects"
-import { REQUEST_FILTERS, SET_FILTERS, RECPOINTS, POST_FILTER } from "../types"
+import { REQUEST_FILTERS, SET_FILTERS, SET_FILTERS_LIST, RECPOINTS, POST_FILTER, MARKERS } from "../types"
 import ApiService from "../../services/ApiService"
 
 
 export function* SagaWatcher() {
     yield takeEvery(REQUEST_FILTERS, requestFilterWatcher)
     yield takeEvery(RECPOINTS.REQUEST, requestRecPointsWatcher)
+    yield takeEvery(MARKERS.REQUEST, requestMarkersWatcher)
 
     yield takeEvery(RECPOINTS.POST, postRecPointsWatcher)
     yield takeEvery(POST_FILTER, postFilterWatcher)
+    yield takeEvery(MARKERS.POST, postMarkersWatcher)
 }
 
 function* postFilterWatcher ({ payload }) {
@@ -29,6 +31,16 @@ function* postRecPointsWatcher ({ payload }) {
         console.error(error)
     }
 }
+
+function* postMarkersWatcher ({ payload }) {
+    try {
+        console.log("payload rec", payload)
+        yield call(ApiService.Markers.Create, payload)
+        yield put({ type: MARKERS.REQUEST })
+    } catch (error) {
+        console.error(error)
+    }
+}
 function* requestRecPointsWatcher () {
     try {
         const res = yield call(ApiService.RecPoint.Get)
@@ -38,10 +50,27 @@ function* requestRecPointsWatcher () {
     }
 }
 
-function* requestFilterWatcher () {
+function* requestFilterWatcher ({payload}) {
     try {
-        const res = yield call(ApiService.Filter.Get)
-        yield put({ type: SET_FILTERS, payload: res })
+        console.log("payload", payload);
+        if(!payload) {
+            const res = yield call(ApiService.Filter.Get)
+            yield put({ type: SET_FILTERS, payload: res })
+        } else {
+            const res = yield call(ApiService.Markers.GetList)
+            console.log(res);
+            yield put({ type: SET_FILTERS_LIST, payload: res })
+        }
+    } catch (error) {
+        console.error(error)
+    }
+}
+
+function* requestMarkersWatcher () {
+    try {
+        const res = yield call(ApiService.Markers.Get)
+        console.log("PL", typeof(res))
+        yield put({ type: MARKERS.SET, payload: res })
     } catch (error) {
         console.error(error)
     }

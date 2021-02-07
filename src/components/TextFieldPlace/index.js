@@ -38,6 +38,7 @@ export default ({setCoords, setAddr, coords, ...rest}) => {
     const [inputValue, setInputValue] = React.useState('');
     const [options, setOptions] = React.useState([]);
     const loaded = React.useRef(false);
+    const [except, setExcept] = React.useState(false)
 
     
     // if (typeof window !== 'undefined' && !loaded.current) {
@@ -96,21 +97,19 @@ export default ({setCoords, setAddr, coords, ...rest}) => {
         };
     }, [value, inputValue, fetch]);
     useEffect(async () => {
-        if (value) {
-            console.log("value", value)
+        if (value && !except) {
             const res = await Geocode.fromAddress(value.description)
-            console.log("res", res)
             setCoords(res.results[0].geometry.location)
             setAddr(value.description)
         }
-    }, [value])
+    }, [value, except])
 
     useEffect(async ()=>{
         if(coords?.lat && coords?.lng){
             const res = await Geocode.fromLatLng(coords.lat, coords.lng, null, "ru")
-            console.log(res)
             setAddr(res.results[0].formatted_address)
             setInputValue(res.results[0].formatted_address)
+            setExcept(true)
             setValue({ ... res.results[0], description: res.results[0].formatted_address})
         }
     }, [coords.lat, coords.lng])
@@ -129,6 +128,7 @@ export default ({setCoords, setAddr, coords, ...rest}) => {
             onChange={(event, newValue) => {
                 setOptions(newValue ? [newValue, ...options] : options);
                 setValue(newValue);
+                setExcept(false)
             }}
             onInputChange={(event, newInputValue) => {
                 setInputValue(newInputValue);

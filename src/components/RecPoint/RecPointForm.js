@@ -1,4 +1,4 @@
-import { Button, TableHead, TableRow, TextField, Table, TableBody, TableCell, InputAdornment, Icon } from '@material-ui/core'
+import { Button, TableHead, TableRow, TextField, Table, TableBody, TableCell, InputAdornment, Icon, Select, MenuItem, InputLabel, FormControl } from '@material-ui/core'
 import { Autocomplete } from '@material-ui/lab'
 import { Delete, Clear, Edit, Add, Close } from '@material-ui/icons'
 import React, { useEffect, useState } from 'react'
@@ -26,7 +26,10 @@ export const RecPointForm = () => {
     const description = useInput("")
     const address = useInput("")
     const coords = useInput()
-    const contacts = useInput("(9  )    -    ")
+    const contacts = [
+        { phone: useInput("(9  )    -    "), name: useInput("")},
+        { phone: useInput("(9  )    -    "), name: useInput("")}
+    ]
     const work_time = useInput({
         "ПН": ["", "", "", ""],
         "ВТ": ["", "", "", ""],
@@ -39,8 +42,21 @@ export const RecPointForm = () => {
     const filters = useInput([])
 
     const images = useInput([])
-    const image_paths = useInput([])
-    const filename = useInput("")
+    // const image_paths = useInput([])
+    // const filename = useInput("")
+    const reception_type = useInput()
+    const payback_type = useInput()
+
+    const rec_types = {
+        recycle: "Переработка",
+        utilisation: "Утилизация",
+        charity: "Благотворительность",
+    }
+    const payback_types = {
+        free: "Бесплатный прием",
+        paid: "Платный прием",
+        partner: "Пункты приема",
+    }
 
     const editable = false
 
@@ -63,9 +79,11 @@ export const RecPointForm = () => {
             fd.append("description", description.value)
             fd.append("address", address.value)
             fd.append("coords", JSON.stringify(coords.value))
-            fd.append("contacts", '+7' + contacts.value)
+            fd.append("contacts", JSON.stringify(contacts.map(c => ({phone: c.phone.value, name: c.name.value}))))
             fd.append("work_time", JSON.stringify(work_time.value))
             fd.append("accept_types", JSON.stringify(filters.value.map((e) => e._id['$oid'])))
+            fd.append("reception_type", reception_type.value)
+            fd.append("payback_type", payback_type.value)
             // if (!!images.length > 0)
             //     fd.append("image", DataUriToBlob(images.value), filename.value)
             for (let file of images.value) {
@@ -74,7 +92,6 @@ export const RecPointForm = () => {
             dispatch(postRecPoint(fd))
         }
     }
-
     const appendToImages = (image) => {
         images.setValue(p => p.concat(image))
     }
@@ -143,6 +160,36 @@ export const RecPointForm = () => {
                     />
                 </div>
                 <div className="input_container">
+                    <FormControl
+                        fullWidth
+                    >
+                        <InputLabel id="reception-select-label">Тип переработки</InputLabel>
+                        <Select
+                            labelId="reception-select-label"
+                            {...reception_type.bind}
+                        >
+                            {Object.keys(rec_types).map(key =>
+                                <MenuItem key={key} value={key}>{rec_types[key]}</MenuItem>
+                            )}
+                        </Select>
+                    </FormControl>
+                </div>
+                <div className="input_container">
+                    <FormControl
+                        fullWidth
+                    >
+                        <InputLabel id="payback-select-label">Тип вознаграждения</InputLabel>
+                        <Select
+                            labelId="payback-select-label"
+                            {...payback_type.bind}
+                        >
+                            {Object.keys(payback_types).map(key =>
+                                <MenuItem key={key} value={key}>{payback_types[key]}</MenuItem>
+                            )}
+                        </Select>
+                    </FormControl>
+                </div>
+                <div className="input_container">
                     <TextField
                         fullWidth
                         label="Описание"
@@ -180,12 +227,21 @@ export const RecPointForm = () => {
                         setAddr={address.setValue} />
                 </div>
                 <div className="input_container">
-                    <TextFieldPhone
-                        fullWidth
-                        label="Контактный телефон"
-                        startAdornment={<InputAdornment>+7</InputAdornment>}
-                        {...contacts.bind}
-                    />
+                    {contacts.map((c, i) => {
+                        return <>
+                            <TextField 
+                                fullWidth
+                                label="Контактное лицо"
+                                {...c.name.bind}
+                            />  
+                            <TextFieldPhone
+                                fullWidth
+                                label="Контактный телефон"
+                                startAdornment={<InputAdornment>+7</InputAdornment>}
+                                {...c.phone.bind}
+                            />
+                        </>
+                    })}
                 </div>
                 <div className="input_container">
                     <Table>
@@ -204,12 +260,14 @@ export const RecPointForm = () => {
                             <TableRow>
                                 {WEEK_DAYS.map((day, i) => <TableCell key={i} align="center">
                                     <TextField onChange={(e) => set_work_time(day, 0, e.target.value)} type="time" />
+                                    <br></br>
                                     <TextField onChange={(e) => set_work_time(day, 1, e.target.value)} type="time" />
                                 </TableCell>)}
                             </TableRow>
                             <TableRow>
                                 {WEEK_DAYS.map((day, i) => <TableCell key={i} align="center">
                                     <TextField onChange={(e) => set_work_time(day, 2, e.target.value)} type="time" />
+                                    <br></br>
                                     <TextField onChange={(e) => set_work_time(day, 3, e.target.value)} type="time" />
                                 </TableCell>)}
                             </TableRow>

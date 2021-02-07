@@ -6,10 +6,12 @@ import { combineReducers } from "redux"
 // import { rootReducer } from "./rootReducer"
 import filterReducer from "./filterReducer"
 import recpointReducer from "./recpointReducer"
+import markerReducer from "./markerReducer"
 
 export const combinedReducers = combineReducers({
     filters: filterReducer,
-    recpoints: recpointReducer
+    recpoints: recpointReducer,
+    markers: markerReducer 
     // app: rootReducer,
     // activity: activityReducer,
     // posts: postsReducer,

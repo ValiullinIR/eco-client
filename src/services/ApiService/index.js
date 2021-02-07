@@ -5,6 +5,7 @@
 // import Report from "./Report"
 import Filter from "./Filter"
 import RecPoint from "./RecPoint"
+import Markers from "./Markers"
 
 export default {
     // Activity,
@@ -13,5 +14,6 @@ export default {
     // Admin,
     // Report
     Filter,
-    RecPoint
+    RecPoint,
+    Markers
 }

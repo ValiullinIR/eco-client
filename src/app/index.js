@@ -4,6 +4,7 @@ import { FilterPage } from '../pages/FiltersPage'
 import { IndexPage } from '../pages/IndexPage'
 import { MapPage } from '../pages/MapPage'
 import { RecPointsPage } from '../pages/RecPointsPage'
+import { MarkersPage } from '../pages/MarkersPage'
 
 export const App = () => {
     
@@ -14,6 +15,7 @@ export const App = () => {
             <Route path="/test_map" component={() => <MapPage />} />
             <Route path="/filters" component={() => <FilterPage />} />
             <Route path="/rec_points" component={() => <RecPointsPage />} />
+            <Route path="/markers" component={() => <MarkersPage />} />
             
         </Switch>
     )
