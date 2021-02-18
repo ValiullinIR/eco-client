@@ -6,6 +6,9 @@
 import Filter from "./Filter"
 import RecPoint from "./RecPoint"
 import Markers from "./Markers"
+import User from "./User"
+import Partner from "./Partner"
+import Stats from "./Stats"
 
 export default {
     // Activity,
@@ -15,5 +18,8 @@ export default {
     // Report
     Filter,
     RecPoint,
-    Markers
+    Markers,
+    User,
+    Partner,
+    Stats
 }

@@ -2,7 +2,7 @@ import { Table, TableHead, Typography, TableBody, TableRow, TableCell, withStyle
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { FilterRow } from './FilterRow'
-import { requestFilters } from '../../store/actions'
+import { requestFilters, setFilter } from '../../store/actions'
 import { StyledTableCell } from '../StyledComponents/StyledTableCell'
 
 
@@ -34,7 +34,7 @@ export const Filters = () => {
             {filters.map((filter, i) => <FilterRow
                 key={i}
                 {...filter}
-                // onClick={() => dispatch(setCurrentActivity(filter))}
+                onClick={() => dispatch(setFilter(filter))}
             />)}
         </TableBody>
     </Table>

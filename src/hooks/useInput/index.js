@@ -13,6 +13,7 @@ export const useInput = (initalvalue = "") => {
         },
         value,
         setValue,
-        cleanup
+        cleanup,
+        initalvalue
     }
 }

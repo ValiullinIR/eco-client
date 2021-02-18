@@ -1,15 +1,15 @@
-import { MARKERS } from "../types"
+import { PARTNERS } from "../types"
 
 const initalState = {
-    markers: [],
+    partners: [],
     current: null
 }
 
 export default (state = initalState, action ) => {
     switch(action.type){
-        case MARKERS.SET:
-            return { ...state, markers: action.payload}
-        case MARKERS.SET_CURRENT:
+        case PARTNERS.SET:
+            return { ...state, partners: action.payload}
+        case PARTNERS.SET_CURRENT:
             return { ...state, current: action.payload}
         default:
             return state

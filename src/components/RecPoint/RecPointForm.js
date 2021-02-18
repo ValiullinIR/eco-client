@@ -8,7 +8,7 @@ import slug from "slugify"
 
 import "./RecPointForm.css"
 import DataUriToBlob from "../../services/DataUriToBlob"
-import { requestFilters, postRecPoint } from '../../store/actions'
+import { requestFilters, postRecPoint, setRecPoint, deleteRecPoint, requestPartners } from '../../store/actions'
 import { TextFieldPhone } from '../TextFieldPhone'
 import TextFieldPlace from '../TextFieldPlace'
 import Map from '../Map'
@@ -19,26 +19,28 @@ const WEEK_DAYS = ["ПН", "ВТ", "СР", "ЧТ", "ПТ", "СБ", "ВС"]
 
 export const RecPointForm = () => {
     const dispatch = useDispatch()
-    // const filter = useSelector((state) => state.filters.current)
+    const current = useSelector((state) => state.recpoints.current)
     const __filters = useSelector(state => state.filters.filters)
+    const partners = useSelector(state => state.partners.partners)
 
     const name = useInput("")
     const description = useInput("")
+    const partner = useInput()
     const address = useInput("")
     const coords = useInput()
     const contacts = [
-        { phone: useInput("(9  )    -    "), name: useInput("")},
-        { phone: useInput("(9  )    -    "), name: useInput("")}
+        { phone: useInput("(9  )    -    "), name: useInput("") },
+        { phone: useInput("(9  )    -    "), name: useInput("") }
     ]
-    const work_time = useInput({
-        "ПН": ["", "", "", ""],
-        "ВТ": ["", "", "", ""],
-        "СР": ["", "", "", ""],
-        "ЧТ": ["", "", "", ""],
-        "ПТ": ["", "", "", ""],
-        "СБ": ["", "", "", ""],
-        "ВС": ["", "", "", ""],
-    })
+    const work_time = {
+        "ПН": useInput(["", "", "", ""]),
+        "ВТ": useInput(["", "", "", ""]),
+        "СР": useInput(["", "", "", ""]),
+        "ЧТ": useInput(["", "", "", ""]),
+        "ПТ": useInput(["", "", "", ""]),
+        "СБ": useInput(["", "", "", ""]),
+        "ВС": useInput(["", "", "", ""]),
+    }
     const filters = useInput([])
 
     const images = useInput([])
@@ -58,12 +60,13 @@ export const RecPointForm = () => {
         partner: "Пункты приема",
     }
 
-    const editable = false
+    const editable = Boolean(current)
 
     const set_work_time = (day, index, value) => {
-        work_time.setValue(p => {
+        work_time[day].setValue(p => {
+            console.log(p)
             let h = { ...p }
-            h[day][index] = value
+            h[index] = value
             return h
         })
     }
@@ -78,9 +81,13 @@ export const RecPointForm = () => {
             fd.append("name", name.value)
             fd.append("description", description.value)
             fd.append("address", address.value)
+            fd.append("partner", partner.value ? partner.value._id["$oid"] : null)
             fd.append("coords", JSON.stringify(coords.value))
-            fd.append("contacts", JSON.stringify(contacts.map(c => ({phone: c.phone.value, name: c.name.value}))))
-            fd.append("work_time", JSON.stringify(work_time.value))
+            fd.append("contacts", JSON.stringify(contacts.map(c => ({ phone: c.phone.value, name: c.name.value }))))
+            fd.append("work_time", JSON.stringify(WEEK_DAYS.reduce((r, i) => {
+                r[i] = work_time[i].value
+                return r
+            },{})))
             fd.append("accept_types", JSON.stringify(filters.value.map((e) => e._id['$oid'])))
             fd.append("reception_type", reception_type.value)
             fd.append("payback_type", payback_type.value)
@@ -126,18 +133,58 @@ export const RecPointForm = () => {
             fr.readAsDataURL(file)
         }
     }
+    const cleanup_fields = () => {
+        name.cleanup()
+        description.cleanup()
+        address.cleanup()
+        coords.cleanup()
+        contacts[0].name.cleanup()
+        contacts[1].name.cleanup()
+        contacts[0].phone.cleanup()
+        contacts[1].phone.cleanup()
+        WEEK_DAYS.forEach(w => work_time[w].setValue(['','','','']))
+        filters.setValue([])
+        reception_type.cleanup()
+        payback_type.cleanup()
+    }
 
     const handleClear = () => {
-        // dispatch(clearCurrentActivity())
+        dispatch(setRecPoint())
+        cleanup_fields()
     }
     const deleteAction = () => {
-        // dispatch(deleteActivity(_activity._id))
+        dispatch(deleteRecPoint(current._id))
     }
 
     useEffect(() => {
         if (__filters.length === 0)
             dispatch(requestFilters())
     }, [__filters.length])
+    useEffect(() => {
+        if (partners.length === 0)
+            dispatch(requestPartners())
+    }, [partners])
+
+    useEffect(() => {
+        if (current) {
+            name.setValue(current.name ? current.name : "")
+            description.setValue(current.description ? current.description : "")
+            address.setValue(current.address ? current.address : "")
+            coords.setValue(current.coords ? current.coords : "")
+            contacts[0].name.setValue(current.contacts[0].name ? current.contacts[0].name : {})
+            contacts[1].name.setValue(current.contacts[1].name ? current.contacts[1].name : {})
+            contacts[0].phone.setValue(current.contacts[0].phone ? current.contacts[0].phone : {})
+            contacts[1].phone.setValue(current.contacts[1].phone ? current.contacts[1].phone : {})
+            WEEK_DAYS.forEach(w => {
+                if (current.work_time[w])
+                    work_time[w].setValue(current.work_time[w])
+            })
+            filters.setValue(current.filters ? current.filters : "")
+            reception_type.setValue(current.reception_type ? current.reception_type : "")
+            payback_type.setValue(current.payback_type ? current.payback_type : "")
+        } else
+            cleanup_fields()
+    }, [current])
 
     return (
         <>
@@ -154,9 +201,23 @@ export const RecPointForm = () => {
                     />
                 </div>
                 <div className="input_container">
-                    <TextField
-                        fullWidth
-                        label="Партнер"
+                    <Autocomplete
+                        freeSolo
+                        id="free-solo-2-demo"
+                        onChange={(event, newValue) => {
+                            partner.setValue(newValue);
+                        }}
+                        getOptionLabel={(option) => option.name}
+                        options={partners}
+                        renderInput={(params) => (
+                            <TextField
+                                {...params}
+                                label="Партнер"
+                                margin="normal"
+                                fullWidth
+                                InputProps={{ ...params.InputProps, type: 'search' }}
+                            />
+                        )}
                     />
                 </div>
                 <div className="input_container">
@@ -228,19 +289,19 @@ export const RecPointForm = () => {
                 </div>
                 <div className="input_container">
                     {contacts.map((c, i) => {
-                        return <>
-                            <TextField 
+                        return <div key={i}>
+                            <TextField
                                 fullWidth
                                 label="Контактное лицо"
                                 {...c.name.bind}
-                            />  
+                            />
                             <TextFieldPhone
                                 fullWidth
                                 label="Контактный телефон"
                                 startAdornment={<InputAdornment>+7</InputAdornment>}
                                 {...c.phone.bind}
                             />
-                        </>
+                        </div>
                     })}
                 </div>
                 <div className="input_container">
@@ -259,16 +320,16 @@ export const RecPointForm = () => {
                         <TableBody>
                             <TableRow>
                                 {WEEK_DAYS.map((day, i) => <TableCell key={i} align="center">
-                                    <TextField onChange={(e) => set_work_time(day, 0, e.target.value)} type="time" />
+                                    <TextField onChange={(e) => set_work_time(day, 0, e.target.value)} type="time" min="00:00" max="23:59"/>
                                     <br></br>
-                                    <TextField onChange={(e) => set_work_time(day, 1, e.target.value)} type="time" />
+                                    <TextField onChange={(e) => set_work_time(day, 1, e.target.value)} type="time" min="00:00" max="23:59"/>
                                 </TableCell>)}
                             </TableRow>
                             <TableRow>
                                 {WEEK_DAYS.map((day, i) => <TableCell key={i} align="center">
-                                    <TextField onChange={(e) => set_work_time(day, 2, e.target.value)} type="time" />
+                                    <TextField onChange={(e) => set_work_time(day, 2, e.target.value)} type="time" min="00:00" max="23:59"/>
                                     <br></br>
-                                    <TextField onChange={(e) => set_work_time(day, 3, e.target.value)} type="time" />
+                                    <TextField onChange={(e) => set_work_time(day, 3, e.target.value)} type="time" min="00:00" max="23:59"/>
                                 </TableCell>)}
                             </TableRow>
                         </TableBody>

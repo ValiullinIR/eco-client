@@ -1,5 +1,5 @@
 import { AppBar, Divider, Drawer, List, ListItem, ListItemIcon, ListItemText, makeStyles, Toolbar, Typography } from '@material-ui/core'
-import { Dashboard, LocationOn, FilterList, Receipt } from "@material-ui/icons"
+import { Dashboard, LocationOn, FilterList, Receipt, Group, GroupWork } from "@material-ui/icons"
 import React from 'react'
 import { Link } from 'react-router-dom';
 
@@ -20,9 +20,21 @@ const PATHS = [
     },
     {
         permission: "all", 
+        path: "/partners",
+        icon: <GroupWork />,
+        title: "Партнеры"
+    },
+    {
+        permission: "all", 
         path: "/rec_points",
         icon: <LocationOn />,
         title: "Пункты приема"
+    },
+    {
+        permission: "all", 
+        path: "/users",
+        icon: <Group />,
+        title: "Пользователи"
     },
     {
         permission: "all", 

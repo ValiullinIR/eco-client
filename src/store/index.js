@@ -7,6 +7,6 @@ import { combinedReducers } from "./reducers";
 export const saga = createSagaMiddleware()
 export const store = createStore(combinedReducers, compose(
     applyMiddleware(
-        thunk, saga
+        thunk, saga,
     )
 ))

@@ -1,18 +1,18 @@
 import { Button, TextField, Table, TableBody, TableHead, TableRow, TableCell, IconButton, FormControl, InputLabel, Input } from '@material-ui/core'
 import { Delete, Clear, Edit, Add } from '@material-ui/icons'
 import React, { useEffect } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { useInput } from '../../hooks/useInput'
 import slug from "slugify"
 
 import "./ActivityForm.css"
-import { postFilter } from '../../store/actions'
+import { deleteFilter, postFilter, setFilter, updateFilter } from '../../store/actions'
 
 
 
 export const FilterForm = () => {
     const dispatch = useDispatch()
-    // const filter = useSelector((state) => state.filters.current)
+    const current = useSelector((state) => state.filters.current)
 
     const name = useInput("")
     const var_name = useInput("")
@@ -22,13 +22,22 @@ export const FilterForm = () => {
     const bad_words = useInput([])
     const image = useInput(null)
 
-    const editable = false
+    const editable = Boolean(current)
 
     const handleSubmit = (e) => {
         e.preventDefault()
         // TODO edit like PostForm
         if (editable) {
-            // dispatch(updateActivity(_activity._id, new_activity))
+            const data = {}
+            if(current.name)
+                data['name'] = name.value
+            if(current.var_name)
+                data['var_name'] = name.var_name
+            if(current.key_words)
+                data['key_words'] = name.key_words
+            if(current.bad_words)
+                data['bad_words'] = name.bad_words
+            dispatch(updateFilter(current._id["$oid"], data))
         } else {
             var fd = new FormData()
             fd.append("name", name.value)
@@ -60,16 +69,30 @@ export const FilterForm = () => {
         bad_word.cleanup()
     }
     const handleClear = () => {
-        // dispatch(clearCurrentActivity())
+        dispatch(setFilter())
     }
     const deleteAction = () => {
-        // dispatch(deleteActivity(_activity._id))
+        dispatch(deleteFilter(current._id["$oid"]))
     }
 
     useEffect(() => {
         if (!editable)
             var_name.setValue(slug(name.value, { lower: true }))
     }, [name.value, editable])
+
+    useEffect(() => {
+        if(current) {
+            name.setValue(current.name)
+            var_name.setValue(current.var_name)
+            key_words.setValue(current.key_words)
+            bad_words.setValue(current.key_words)
+        }else{
+            name.setValue("")
+            var_name.setValue("")
+            key_words.setValue([])
+            bad_words.setValue([])
+        }
+    }, [current])
 
     return (
         <>

@@ -1,7 +1,7 @@
 import { Table, TableHead, Typography, TableBody, TableRow } from '@material-ui/core'
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { requestRecPoints } from '../../store/actions'
+import { requestRecPoints, setRecPoint } from '../../store/actions'
 // import { requestActivities, setCurrentActivity } from '../../store/actions'
 import { StyledTableCell } from '../StyledComponents/StyledTableCell'
 import { RecPointRow } from './RecPointRow'
@@ -35,7 +35,7 @@ export const RecPoints = ({ view = "grid" }) => {
             {recpoints.map((recpoint, i) => <RecPointRow
                 key={i}
                 {...recpoint}
-                // onClick={() => dispatch(setCurrentActivity(filter))}
+                onClick={() => dispatch(setRecPoint(recpoint))}
             />)}
         </TableBody>
     </Table>
