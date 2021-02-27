@@ -81,7 +81,9 @@ export const RecPointForm = () => {
             fd.append("name", name.value)
             fd.append("description", description.value)
             fd.append("address", address.value)
-            fd.append("partner", partner.value ? partner.value._id["$oid"] : null)
+            console.log( partner.value ? partner.value._id : null)
+            fd.append("partner", partner.value ? partner.value._id : null)
+            console.log("partner", partner.value._id )
             fd.append("coords", JSON.stringify(coords.value))
             fd.append("contacts", JSON.stringify(contacts.map(c => ({ phone: c.phone.value, name: c.name.value }))))
             fd.append("work_time", JSON.stringify(WEEK_DAYS.reduce((r, i) => {
@@ -137,7 +139,7 @@ export const RecPointForm = () => {
         name.cleanup()
         description.cleanup()
         address.cleanup()
-        coords.cleanup()
+        coords.setValue({})
         contacts[0].name.cleanup()
         contacts[1].name.cleanup()
         contacts[0].phone.cleanup()
@@ -182,8 +184,9 @@ export const RecPointForm = () => {
             filters.setValue(current.filters ? current.filters : "")
             reception_type.setValue(current.reception_type ? current.reception_type : "")
             payback_type.setValue(current.payback_type ? current.payback_type : "")
-        } else
-            cleanup_fields()
+        } 
+        // else
+        //     cleanup_fields()
     }, [current])
 
     return (
