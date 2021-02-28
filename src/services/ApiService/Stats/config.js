@@ -1,5 +1,5 @@
 const config = { 
-    path: "/admin/stats"
+    path: "/api/admin/stats"
 }
 
 export default config
